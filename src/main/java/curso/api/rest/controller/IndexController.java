@@ -237,6 +237,26 @@ public class IndexController {
 	
 	
 	
+	//END-POINT 
+		@GetMapping(value = "/usuarioPorNome/{nome}/page/{page}", produces = "application/json")
+		public ResponseEntity<Page<Usuario>> usuarioPorNomePage (@PathVariable("nome") String nome, @PathVariable("page") int page) throws InterruptedException{
+			
+			PageRequest pageRequest = null;
+			Page<Usuario> list = null;
+			
+			if (nome == null || (nome != null && nome.trim().isEmpty()) || nome.equalsIgnoreCase("undefined")) {
+				pageRequest = PageRequest.of(page, 5, Sort.by("nome"));
+				list = usuarioRepository.findAll(pageRequest);
+			} else {
+				pageRequest = PageRequest.of(page, 5, Sort.by("nome"));
+				list = usuarioRepository.findUserByNamePage(nome, pageRequest);
+			}
+							
+			return new ResponseEntity<Page<Usuario>>(list, HttpStatus.OK);
+			
+		}
+	
+	
 	
 	
 	@Autowired
