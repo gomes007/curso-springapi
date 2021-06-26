@@ -31,7 +31,7 @@ public class WebConfigSecurity extends WebSecurityConfigurerAdapter {
 		
 		// Ativa permissão para acesso a página inicial
 		.disable().authorizeRequests().antMatchers("/").permitAll()		
-		.antMatchers("/index").permitAll()
+		.antMatchers("/index", "/recuperar/**").permitAll()
 		
 		// Liberação do CORS
 		.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
