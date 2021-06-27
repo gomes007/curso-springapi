@@ -3,6 +3,9 @@ package curso.api.rest.controller;
 import java.util.List;
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
@@ -10,7 +13,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -26,6 +28,7 @@ import curso.api.rest.model.Usuario;
 import curso.api.rest.repository.TelefoneRepository;
 import curso.api.rest.repository.UsuarioRepository;
 import curso.api.rest.service.ImplementacaoUserDetailsService;
+import curso.api.rest.service.ServiceRelatorio;
 
 
 
@@ -39,6 +42,9 @@ public class IndexController {
 	
 	@Autowired
 	private ImplementacaoUserDetailsService implementacaoUserDetailsService;
+	
+	@Autowired
+	private ServiceRelatorio serviceRelatorio;
 	
 	
 	
@@ -267,6 +273,18 @@ public class IndexController {
 		
 		telefoneRepository.deleteById(id);
 		return "ok";
+		
+	}
+	
+	
+	@GetMapping(value="/relatorio", produces = "application/text")
+	public ResponseEntity<String> downloadRelatorio(HttpServletRequest request) throws Exception {
+		byte[] pdf = serviceRelatorio.gerarRelatorio("relatorio-usuario", 
+				request.getServletContext());
+		
+		String base64Pdf = "data:application/pdf;base64," + Base64.encodeBase64String(pdf);
+		
+		return new ResponseEntity<String>(base64Pdf, HttpStatus.OK);
 		
 	}
 	
