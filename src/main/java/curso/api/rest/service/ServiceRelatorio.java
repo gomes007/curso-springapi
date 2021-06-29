@@ -26,7 +26,7 @@ public class ServiceRelatorio implements Serializable {
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 	
-public byte[] gerarRelatorio (String nomeRelatorio, ServletContext servletContext) throws Exception {
+public byte[] gerarRelatorio (String nomeRelatorio, Map<String,Object> params, ServletContext servletContext) throws Exception {
 		
 		
 		/*Obter a conexão com o banco de dados*/
@@ -35,12 +35,12 @@ public byte[] gerarRelatorio (String nomeRelatorio, ServletContext servletContex
 		
 		/*Carregar o caminho do arquivo Jasper*/
 		
-		String caminhoJasper = servletContext.getRealPath("relatorios") 
+		String caminhoJasper = servletContext.getRealPath("relatorios") //nome pasta
 				+ File.separator + nomeRelatorio + ".jasper";
 		
 		/*Gerar o relatorio com os dados e conexão*/
 		
-		JasperPrint print = JasperFillManager.fillReport(caminhoJasper, new HashMap<>(), connection);
+		JasperPrint print = JasperFillManager.fillReport(caminhoJasper, params, connection);
 
 			     
 		
